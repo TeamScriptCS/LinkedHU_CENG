@@ -1,0 +1,26 @@
+
+.app-logo{
+    font-size: 30px;
+    
+}
+
+.app-nav-link {
+    cursor: pointer;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.search-box {
+    color: #fff !important;
+}
+
+.app-nav-button {
+    padding: 8px !important;
+    margin-right: 10px !important;
+    cursor: pointer;
+
+    min-width: 40px;
+
+    text-align: center;
+
+}   
