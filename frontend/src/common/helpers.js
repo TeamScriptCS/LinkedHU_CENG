@@ -1,9 +1,8 @@
 
-import React, { useContext } from 'react';
+import React from 'react';
 
 
 import { AccountBox, AdminPanelSettings, Person, School } from '@mui/icons-material';
-import { ApplicationContext } from './context';
 
 const switchAlignment = (alignment, sx) => {
     switch (alignment) {
@@ -21,20 +20,6 @@ const switchAlignment = (alignment, sx) => {
     }
 }
 
-
-const enqueueSnackbar = (methods, message, type) => {
-    
-    const {showSnackbar, setSnackbarMessage } = methods;
-    setSnackbarMessage({
-        message,
-        type
-    });
-    showSnackbar(true);
-};
-
-    
-
 export {
-    switchAlignment,
-    enqueueSnackbar
+    switchAlignment
 }
