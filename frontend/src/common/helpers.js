@@ -3,6 +3,11 @@ import React from 'react';
 
 
 import { AccountBox, AdminPanelSettings, Person, School } from '@mui/icons-material';
+import HomePage from '../pages/Home/home';
+import Announcements from '../pages/Home/announcements';
+import DocumentUploader from '../pages/Home/documentUploader';
+import AdvertPublisher from '../pages/Home/advertPublish';
+import Profile from '../pages/Profile';
 
 const switchAlignment = (alignment, sx) => {
     switch (alignment) {
@@ -20,6 +25,24 @@ const switchAlignment = (alignment, sx) => {
     }
 }
 
+const switchPage = (page) => {
+    switch (page) {
+        case 'home':
+            return <HomePage/>
+        case 'announcement':
+            return <Announcements/>
+        case 'upload':
+            return <DocumentUploader/>
+        case 'publish':
+            return <AdvertPublisher/>
+        case 'profile':
+            return <Profile/>
+        default:
+            return <HomePage/>
+    }
+}
+
 export {
-    switchAlignment
+    switchAlignment,
+    switchPage
 }

@@ -1,24 +1,32 @@
+
+
+import mockUsers from '../__mock/user.json';
+
 const registerFetch = async (userInfo, userType, studentType) => {
-    try {
-        const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            userInfo: {...userInfo, studentType},
-            userType,
-            })
-        });
     
-        if (res.status === 200) {
-        return res.json();
-        } else {
-        throw new Error(res.message);
+    const user = mockUsers.find(user => user.email === userInfo.email && user.password === userInfo.password && user.userType === userType);
+    
+        if (user) {
+            return {
+                status: 403,
+                message: 'Registration Failed user already registered'
+            };
         }
-    } catch (err) {
-        throw new Error(err.message);
-    }
-    }
+        
+        else {
+
+            userInfo.userType = userType;
+
+            if(studentType) {
+                userInfo.studentType = studentType;
+            }
+
+            return {
+                status: 200,
+                message: 'Registration Successful'
+            };
+        }
+}
+
 
 export default registerFetch;

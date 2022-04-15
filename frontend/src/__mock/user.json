@@ -1,0 +1,24 @@
+[
+    {
+        "username": "admin@gmail.com",
+        "password": "adminadmin",
+        "userType": "admin",
+        "firstName": "admin",
+        "lastName": "admin"
+    },
+    {
+        "username": "mehmet@gmail.com",
+        "password": "mehmetmehmet",
+        "userType": "academic",
+        "firstName": "mehmet",
+        "lastName": "mehmet"
+    },
+    {
+        "username": "lenovo",
+        "password": "lenovolenovo",
+        "userType": "student",
+        "firstName": "lenovo",
+        "lastName": "lenovo",
+        "studentType": "undergraduate"
+    }
+]

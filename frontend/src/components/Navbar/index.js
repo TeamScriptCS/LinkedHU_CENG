@@ -1,18 +1,33 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppBar, Toolbar, Typography, MenuItem, IconButton, Menu, Button, ButtonGroup } from '@mui/material';
 
 import { Link } from 'react-router-dom';
 
 
 import './navbar.css';
-import { UploadFile } from "@mui/icons-material";
+import { UploadFile, Article } from "@mui/icons-material";
 import { ApplicationContext } from "../../common/context";
 
+import SearchBox from "../SearchBox";
 
 const Navbar = ({isLoggedIn}) => {
 
-    const {contextMethods} = useContext(ApplicationContext);
+    const {contextMethods, setContextMethods }  = useContext(ApplicationContext);
     const [currentPage, setCurrentPage] = useState('home');
+    const { user } = contextMethods;
+
+
+    useEffect(() => {
+        setContextMethods({
+            ...contextMethods,
+            currentPage: currentPage,
+            setCurrentPage: setCurrentPage
+        });
+
+        console.log(user);
+    }, [currentPage, setCurrentPage]);
+
+    
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -22,6 +37,7 @@ const Navbar = ({isLoggedIn}) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     return (
        <>
         <AppBar
@@ -38,11 +54,14 @@ const Navbar = ({isLoggedIn}) => {
           </IconButton>
           
           <div style={{display:"flex", flexDirection:"row", flexGrow:"1"}}>
-            <Typography variant="h6" sx={{flexGrow:1, maxWidth:"20%"}}>
+            <Typography variant="h6" sx={{flexGrow:1}}>
                 <Link to="/" className="app-logo app-nav-link"><b>LinkedHU</b> CENG</Link>
             </Typography>
             
-            {/* searchbox with Search icon */}
+            {isLoggedIn &&<Typography sx={{marginRight: "20%"}} >
+                <SearchBox/>
+            </Typography>}
+
             
 
           </div>
@@ -60,7 +79,7 @@ const Navbar = ({isLoggedIn}) => {
 
             }}>
               <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group" 
-                sx={{mr:"50px"}}>
+                sx={{mr:"100px"}}>
                 
                 <Button sx={{mr:'10px'}} variant={currentPage === "home" ? "contained":"outlined"} 
                   {...(currentPage === "home" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}
@@ -72,18 +91,29 @@ const Navbar = ({isLoggedIn}) => {
                   onClick={() => setCurrentPage('announcement')}>
                     Announcements
                 </Button>
-                <Button sx={{mr:'5px'}} variant={currentPage === "link2" ? "contained":"outlined"} 
-                  {...(currentPage === "link2" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}
-                  onClick={() => setCurrentPage('link2')}>
-                  Link2
+                <Button sx={{mr:'5px'}} variant={currentPage === "request" ? "contained":"outlined"}
+                  {...(currentPage === "request" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}
+                  onClick={() => setCurrentPage('request')}>
+                    Send Request
                 </Button>
-
-
                 </ButtonGroup>
-                <Button variant="contained" aria-label="upload" style={{backgroundColor:"#7a5d81", textTransform: "capitalize", marginRight:"20px"}}>
+
+                <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+
+                {user && user.userType === "student" ? null : (<Button variant="contained" aria-label="publish" style={{backgroundColor:"#7a5d81", textTransform: "capitalize", marginRight:"4px"}}
+                  onClick={() => setCurrentPage('publish')}>
+                
+                  <Article sx={{"mr":1}}/>
+                   
+                  Publish Advertisement
+                </Button>)}
+
+                <Button variant="contained" aria-label="upload" style={{backgroundColor:"#7a5d81", textTransform: "capitalize", marginRight:"20px"}}
+                 onClick={() => setCurrentPage('upload')}>
                   <UploadFile sx={{"mr":1}}/>
                   Upload Document
                 </Button>
+                </ButtonGroup>
                  <IconButton
                     aria-label="account of current user"
                     aria-controls="simple-menu"
@@ -101,9 +131,16 @@ const Navbar = ({isLoggedIn}) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={() => {
+          handleClose();
+          setCurrentPage('profile');
+        }}>Profile</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={contextMethods.logout}>Logout</MenuItem>
+        <MenuItem onClick={() => {
+          contextMethods.logout();
+          setAnchorEl(null);
+          contextMethods.setCurrentPage('home');
+        }}>Logout</MenuItem>
       </Menu>
 
 

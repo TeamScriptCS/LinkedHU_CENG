@@ -1,22 +1,26 @@
 import {API_URL} from '../common/constants';
 
-const loginFetch = async (email, password, userType) => {
+import mockUsers from '../__mock/user.json';
+
+const loginFetch = (email, password, userType) => {
 
 
-    console.log(email, password, userType);
+    const user = mockUsers.find(user => user.username === email && user.password === password && user.userType === userType);
 
-    if(userType === 'admin' && email === 'admin@gmail.com' && password==="adminadmin" ){
+    if (user) {
+        user.userType = userType;
         return {
             status: 200,
             message: 'Login Successful',
-            userType: 'admin'
+            user: user
         };
     }
-    return {
-        status: 403,
-        message: 'Login Failed',
-        userType: 'admin'
-    }
+    else
+        return {
+            status: 400,
+            message: 'Login Failed'
+        };
+}
 
 
     // return fetch(`${API_URL}/login`, {
@@ -41,6 +45,6 @@ const loginFetch = async (email, password, userType) => {
     // .catch(err => {
     //     throw new Error(err.message);
     // });
-}
+
 
 export default loginFetch;

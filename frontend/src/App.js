@@ -19,17 +19,17 @@ import registerFetch from './api/registerFetch';
 
 import './App.css';
 import Home from './pages/Home';
+import advertPublishFetch from './api/advertFetch';
 
 
 
-  const loadUserData = () => {
-    return JSON.parse(localStorage.getItem('userData'));
-  }
+const loadUserData = () => {
+  return JSON.parse(localStorage.getItem('userData'));
+}
 
-  const saveUserData = (userData) => {
-    localStorage.setItem('userData', JSON.stringify(userData));
-  }
-
+const saveUserData = (userData) => {
+  localStorage.setItem('userData', JSON.stringify(userData));
+}
 
 
 
@@ -37,6 +37,9 @@ function App() {
 
   const [snackbarInfo, setSnackbarInfo] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [user, setUser] = useState(loadUserData());
+  
 
   const login = async (username, password, userType, isRememberMe) => {
     
@@ -51,13 +54,12 @@ function App() {
           variant: 'success'
         });
 
-        saveUserData({
-          username,
-          password,
-          userType,
+        const userDTO = {
+          ...res.user,
           expiresIn: isRememberMe ? new Date().getTime() + (1000 * 60 * 60 * 24 * 7) : new Date().getTime() + (1000 * 60 * 60 * 24 * 1)
-        });
-
+        };
+        saveUserData(userDTO);
+        setUser(userDTO);
 
       } else {
         throw new Error(res.message);
@@ -73,8 +75,7 @@ function App() {
 
   const register = async (userInfo, userType, studentType) => {
 
-    try {
-      const res = await registerFetch(userInfo, userType, studentType);
+    const res = await registerFetch(userInfo, userType, studentType);
 
       if (res.status === 200) {
         setSnackbarInfo({
@@ -85,6 +86,8 @@ function App() {
       } else {
         throw new Error(res.message);
       }
+    try {
+      
     } catch (err) {
       setSnackbarInfo({
         open: true,
@@ -93,6 +96,38 @@ function App() {
       });
     }
   }
+
+  const advertPublish = async (advert, advertType) => {
+    
+    try {
+      const res = {
+        status: 200
+      };//await advertPublishFetch(advert);
+      if (res.status === 200) {
+        setSnackbarInfo({
+          open: true,
+          message: 'Advert Published',
+          variant: 'success'
+        });
+        
+        contextMethods.setCurrentPage("home");
+  
+      }
+      else {
+        throw new Error(res.message);
+      }
+  
+      return true;
+    } catch (err) {
+      setSnackbarInfo({
+        open: true,
+        message: "Advert Publish Failed",
+        variant: 'error'
+      });
+      return false;
+    }
+  }
+
 
 
   const logout = () => {
@@ -106,19 +141,25 @@ function App() {
     setIsLoggedIn,
     login,
     register,
-    logout
+    logout,
+    user,
+    advertPublish,
+    refreshUser: () => setUser(loadUserData())
   });
 
 
+  useEffect(() => {
+    setUser(loadUserData());
+  }, []);
 
   useEffect(() => {
-    
-    const userData = loadUserData();
-    
-    if(userData && userData.expiresIn > Date.now()) {
+  
+    if(user && user.expiresIn > Date.now()) {
       setIsLoggedIn(true);
     }
-  }, []);
+  }, [user]);
+
+
 
 
   return (
@@ -139,7 +180,6 @@ function App() {
           
         
       </header>
-            
       <div>
         <Routes>
           <Route path="/" exact element={isLoggedIn ? <Home/> : <Intro />} />
@@ -147,6 +187,14 @@ function App() {
           <Route path="/register" element={isLoggedIn ? <Home/> : <Register/>} />
         </Routes>
       </div>
+
+      
+    <footer>
+      <p>
+        Copyright &copy; 2022 LinkedHU CENG. TeamScript. All rights reserved.
+      </p>
+
+    </footer>
     </ApplicationContext.Provider>
   );
 }
