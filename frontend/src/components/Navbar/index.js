@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { AppBar, Toolbar, Typography, MenuItem, IconButton, Menu, Button, ButtonGroup } from '@mui/material';
+import { AppBar, Toolbar, Typography, MenuItem, IconButton, Menu, Button, ButtonGroup, Grid } from '@mui/material';
 
 import { Link } from 'react-router-dom';
 
@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import './navbar.css';
 import { UploadFile } from "@mui/icons-material";
 import { ApplicationContext } from "../../common/context";
+
+import SearchBox from "../SearchBox";
 
 
 const Navbar = ({isLoggedIn}) => {
@@ -41,6 +43,11 @@ const Navbar = ({isLoggedIn}) => {
             <Typography variant="h6" sx={{flexGrow:1, maxWidth:"20%"}}>
                 <Link to="/" className="app-logo app-nav-link"><b>LinkedHU</b> CENG</Link>
             </Typography>
+
+            <Typography marginLeft={10}>
+                <SearchBox/>
+            </Typography>
+
             
             {/* searchbox with Search icon */}
             
@@ -101,7 +108,7 @@ const Navbar = ({isLoggedIn}) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}><Link to="/profile" style={{textDecoration: 'none' , color: 'black'}}>Profile</Link></MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={contextMethods.logout}>Logout</MenuItem>
       </Menu>

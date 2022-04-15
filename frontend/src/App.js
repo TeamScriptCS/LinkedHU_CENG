@@ -20,6 +20,8 @@ import registerFetch from './api/registerFetch';
 import './App.css';
 import Home from './pages/Home';
 
+import Profile from './pages/Profile'
+
 
 
   const loadUserData = () => {
@@ -145,6 +147,7 @@ function App() {
           <Route path="/" exact element={isLoggedIn ? <Home/> : <Intro />} />
           <Route path="/login" element={isLoggedIn ? <Home/> : <Login/>} />
           <Route path="/register" element={isLoggedIn ? <Home/> : <Register/>} />
+          <Route path="/profile" element={isLoggedIn ? <Profile/> : <Login/>}/>
         </Routes>
       </div>
     </ApplicationContext.Provider>
