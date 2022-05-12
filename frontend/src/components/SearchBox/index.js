@@ -61,8 +61,8 @@ const SearchBox = () => {
             <div className="dataResult">
                 {filteredData.slice(0, 15).map((value, key) => {
                     return (
-                    <a className="dataItem" href={value.link} target="_blank">
-                        <p>{value.first_name} </p>
+                    <a className="dataItem" href="#">
+                        <p> {value.first_name} </p>
                     </a>
                     );
                 })}

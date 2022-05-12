@@ -32,7 +32,7 @@ const Register = () => {
     const submit = () => {
       
       // check if all fields are filled
-      if (userInfo.firstName === '' || userInfo.lastName === '' || userInfo.email === '' || userInfo.password === '' ||
+      if (userInfo.firstName === '' || userInfo.lastName === '' || userInfo.email === '' || userInfo.password.length <8 ||
         checkEmail(userInfo.email)) {
         contextMethods.setSnackbarInfo({
           open: true,

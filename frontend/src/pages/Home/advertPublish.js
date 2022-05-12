@@ -9,7 +9,7 @@ const AdvertPublisher = () => {
     const {contextMethods} = useContext(ApplicationContext);
     const { user } = contextMethods;
     
-    const [advertType, setAdvertType] = React.useState(user.userType === "graduate" ? "job" : "internship");
+    const [advertType, setAdvertType] = React.useState("internship");
 
     const [advert, setAdvert] = React.useState({
         title: '',
@@ -31,10 +31,10 @@ const AdvertPublisher = () => {
             return;
         }
 
-        const publishResult = contextMethods.advertPublish(advert, advertType);
-        if (publishResult) {
-            contextMethods.setCurrentPage("home");
-        }
+        // const publishResult = contextMethods.advertPublish(advert, advertType);
+        // if (publishResult) {
+        //     contextMethods.setCurrentPage("home");
+        // }
     }
 
     return (
@@ -48,8 +48,8 @@ const AdvertPublisher = () => {
                     exclusive
                     onChange={(event, newAdvertType) => setAdvertType(newAdvertType || advertType)}>
                       
-                    {user.userType === 'academic' && <ToggleButton style={{borderRadius: "0px"}} value="internship" ><b>Internship</b></ToggleButton>}
-                    {user.userType === 'academic' && <ToggleButton style={{borderRadius: "0px"}} value="scholarship"><b>Scholarship</b></ToggleButton>}
+                    <ToggleButton style={{borderRadius: "0px"}} value="internship" ><b>Internship</b></ToggleButton>
+                    <ToggleButton style={{borderRadius: "0px"}} value="scholarship"><b>Scholarship</b></ToggleButton>
                     {user.userType === 'graduate' && <ToggleButton style={{borderRadius: "0px"}} value="job" ><b>Job</b></ToggleButton>}
                 </ToggleButtonGroup>
 

@@ -1,4 +1,4 @@
-package org.teamscript.LinkedHU_CENG.config;
+package com.hacettepe.LinkedHU_CENG.Config;
 
 public class Constants {
 

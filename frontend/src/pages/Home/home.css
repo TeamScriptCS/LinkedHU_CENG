@@ -23,7 +23,7 @@
     height: calc(100vh - 200px);
     justify-self: center;
 
-    margin-top: -200px; 
+    /* margin-top: -200px;  */
     padding: 0;
       
     width: 100%;

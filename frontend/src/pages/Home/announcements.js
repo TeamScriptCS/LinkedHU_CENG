@@ -1,7 +1,6 @@
 import { DeleteForever, Edit, ViewArray, Visibility } from '@mui/icons-material';
 import { List, ListItem,Stack,Chip, ListItemText, ButtonGroup, Button, IconButton } from '@mui/material';
 import React, { useContext } from 'react';
-import fetchAnnouncements from '../../api/announcFetch';
 import { ApplicationContext } from '../../common/context';
 
 const Announcements = () => {
@@ -14,10 +13,6 @@ const Announcements = () => {
         "scholarship": "secondary",
         "job": "error",
     }
-
-    React.useEffect(() => {
-        setAnnouncements(fetchAnnouncements());
-    }, []);
 
 
     return (

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AppBar, Toolbar, Typography, MenuItem, IconButton, Menu, Button, ButtonGroup } from '@mui/material';
+import { AppBar, Toolbar, Typography, MenuItem, IconButton, Menu, Button, ButtonGroup, Divider } from '@mui/material';
 
 import { Link } from 'react-router-dom';
 
@@ -23,8 +23,6 @@ const Navbar = ({isLoggedIn}) => {
             currentPage: currentPage,
             setCurrentPage: setCurrentPage
         });
-
-        console.log(user);
     }, [currentPage, setCurrentPage]);
 
     
@@ -123,6 +121,7 @@ const Navbar = ({isLoggedIn}) => {
                     style={{marginRight:"8px"}}
                   >
                     <img src="./static/img/user.jpg" alt="profile" style={{ height:"48px", width:"48px", borderRadius:"50%"}}/>
+                    <span style={{fontSize:"12px", fontWeight:"bold", color:"#fff"}}>{user && user.name}</span>
                   </IconButton>
       <Menu
         id="simple-menu"
@@ -131,11 +130,24 @@ const Navbar = ({isLoggedIn}) => {
         open={open}
         onClose={handleClose}
       >
+        
         <MenuItem onClick={() => {
           handleClose();
           setCurrentPage('profile');
         }}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        
+        <Divider />
+        {user && user.userType === "admin" ? (<MenuItem onClick={() => {
+          handleClose();
+        }
+        }>Manage Accounts</MenuItem>): null}
+
+        <MenuItem 
+        onClick={() => {
+        }
+        }>Manage Videos</MenuItem>
+        <Divider/>
+
         <MenuItem onClick={() => {
           contextMethods.logout();
           setAnchorEl(null);

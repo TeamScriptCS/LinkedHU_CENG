@@ -1,4 +1,4 @@
-package org.teamscript.LinkedHU_CENG;
+package com.hacettepe.LinkedHU_CENG;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

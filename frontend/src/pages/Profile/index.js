@@ -24,14 +24,14 @@ const Profile = () => {
     
     const contextMethods = useContext(ApplicationContext).contextMethods;
 
-    const userData = contextMethods.user;
+    let userData = contextMethods.user;
 
 
     const [image, setImage] = React.useState("./static/img/user.jpg");
-    const [firstName, setFirstName] = React.useState(userData.username);
+    const [firstName, setFirstName] = React.useState(userData.firstName);
     const [email, setEmail] = React.useState(userData.username);
     const [psw, setPsw] = React.useState(null);
-    const [newPsw, setNewPsw] = React.useState(null);
+    const [newPsw, setNewPsw] = React.useState(null);   
     const [firstNameError, setFirstNameError] = React.useState(null);
     const [emailError, setEmailError] = React.useState(null);
     const [pswError, setPswError] = React.useState(null);
@@ -92,9 +92,9 @@ const Profile = () => {
                                 <CardContent>
                                     
                                     <div className="details">
-                                        <div>
+                                        <div style={{flexGrow:1}}>
                                             <Typography  gutterBottom variant="h5" >
-                                                {firstName}
+                                                {userData.firstName} {userData.lastName}
                                             </Typography>
                                             <Typography
                                             color="textSecondary"

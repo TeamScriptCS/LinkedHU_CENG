@@ -14,11 +14,18 @@
         "lastName": "mehmet"
     },
     {
-        "username": "lenovo",
-        "password": "lenovolenovo",
+        "username": "student@gmail.com",
+        "password": "studentstudent",
         "userType": "student",
         "firstName": "lenovo",
         "lastName": "lenovo",
         "studentType": "undergraduate"
+    },
+    {
+        "username": "graduate@gmail.com",
+        "password": "graduategraduate",
+        "userType": "graduate",
+        "firstName": "lenovo",
+        "lastName": "lenovo"
     }
 ]

@@ -13,25 +13,13 @@ import { ApplicationContext } from './common/context';
 
 import { Alert, Snackbar } from '@mui/material';
 
-import loginFetch from './api/loginFetch';
-import registerFetch from './api/registerFetch';
+
+import {loadUserData, saveUserData, login} from './common/methods';
 
 
 import './App.css';
 import Home from './pages/Home';
-import advertPublishFetch from './api/advertFetch';
-
-
-
-const loadUserData = () => {
-  return JSON.parse(localStorage.getItem('userData'));
-}
-
-const saveUserData = (userData) => {
-  localStorage.setItem('userData', JSON.stringify(userData));
-}
-
-
+import ForgotPassword from './pages/ForgotPassword';
 
 function App() {
 
@@ -40,95 +28,6 @@ function App() {
 
   const [user, setUser] = useState(loadUserData());
   
-
-  const login = async (username, password, userType, isRememberMe) => {
-    
-    try {
-      const res = await loginFetch(username, password, userType);
-      
-      if (res.status === 200) {
-        setIsLoggedIn(true);
-        setSnackbarInfo({
-          open: true,
-          message: 'Login Successful',
-          variant: 'success'
-        });
-
-        const userDTO = {
-          ...res.user,
-          expiresIn: isRememberMe ? new Date().getTime() + (1000 * 60 * 60 * 24 * 7) : new Date().getTime() + (1000 * 60 * 60 * 24 * 1)
-        };
-        saveUserData(userDTO);
-        setUser(userDTO);
-
-      } else {
-        throw new Error(res.message);
-      }
-    } catch (err) {
-      setSnackbarInfo({
-        open: true,
-        message: "Login Failed",
-        variant: 'error'
-      });
-    }
-  }
-
-  const register = async (userInfo, userType, studentType) => {
-
-    const res = await registerFetch(userInfo, userType, studentType);
-
-      if (res.status === 200) {
-        setSnackbarInfo({
-          open: true,
-          message: 'Registration Successful',
-          variant: 'success'
-        });
-      } else {
-        throw new Error(res.message);
-      }
-    try {
-      
-    } catch (err) {
-      setSnackbarInfo({
-        open: true,
-        message: "Registration Failed",
-        variant: 'error'
-      });
-    }
-  }
-
-  const advertPublish = async (advert, advertType) => {
-    
-    try {
-      const res = {
-        status: 200
-      };//await advertPublishFetch(advert);
-      if (res.status === 200) {
-        setSnackbarInfo({
-          open: true,
-          message: 'Advert Published',
-          variant: 'success'
-        });
-        
-        contextMethods.setCurrentPage("home");
-  
-      }
-      else {
-        throw new Error(res.message);
-      }
-  
-      return true;
-    } catch (err) {
-      setSnackbarInfo({
-        open: true,
-        message: "Advert Publish Failed",
-        variant: 'error'
-      });
-      return false;
-    }
-  }
-
-
 
   const logout = () => {
     setIsLoggedIn(false);
@@ -140,10 +39,9 @@ function App() {
     isLoggedIn,
     setIsLoggedIn,
     login,
-    register,
+    // register,
     logout,
     user,
-    advertPublish,
     refreshUser: () => setUser(loadUserData())
   });
 
@@ -185,6 +83,7 @@ function App() {
           <Route path="/" exact element={isLoggedIn ? <Home/> : <Intro />} />
           <Route path="/login" element={isLoggedIn ? <Home/> : <Login/>} />
           <Route path="/register" element={isLoggedIn ? <Home/> : <Register/>} />
+          <Route path="/forgot-password" element={isLoggedIn ? <Home/> : <ForgotPassword />} />
         </Routes>
       </div>
 
