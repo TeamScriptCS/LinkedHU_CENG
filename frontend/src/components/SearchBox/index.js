@@ -4,8 +4,7 @@ import { useState } from "react"
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 
-import JSONData from './MOCK_DATA.json';
-
+import {search} from '../../common/methods';
 
 import "./search-box.css";
 
@@ -15,24 +14,41 @@ const SearchBox = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [wordEntered, setWordEntered] = useState("");
 
-    const handleFilter = (event) => {
+    const handleFilter = async (event) => {
         const searchWord = event.target.value;
         setWordEntered(searchWord);
-        const newFilter = JSONData.filter((value) => {
-            return value.first_name.toLowerCase().includes(searchWord.toLowerCase());
-        });
+        
+        if (searchWord.length > 0) {
+            const res = await search({search: searchWord});
 
-        if (searchWord === "") {
-            setFilteredData([]);
-          } else {
-            setFilteredData(newFilter);
-          }
-    };
+            //remove empty objects
+            const resultData = res.filter(item => Object.keys(item).length > 0);
+    
+              if(res.length > 0) {
+                const filtered = resultData.map
+                ((item) => {
+                    return {
+                        id: item.id,
+                        fullname: item.firstname + " " + item.lastname
+                    }
+                });
+
+                setFilteredData(filtered);
+
+            }
+            else {
+                setFilteredData([]);
+            }
+
+
+
+    }
+    }
 
     const clearInput = () => {
         setFilteredData([]);
         setWordEntered("");
-      };
+    };
 
 
 
@@ -42,14 +58,15 @@ const SearchBox = () => {
     return (
 
         <div className="search">
-            <div className="searchInputs">
+            <div className="search-inputs">
                 <input
                 type="text"
                 placeholder={"Search Users"}
                 value={wordEntered}
                 onChange={handleFilter}
+                className="search-input"
                 />
-                <div className="searchIcon">
+                <div className="search-icon">
                 {filteredData.length === 0 ? (
                     <SearchIcon />
                 ) : (
@@ -58,12 +75,15 @@ const SearchBox = () => {
                 </div>
             </div>
         {filteredData.length !== 0 && (
-            <div className="dataResult">
-                {filteredData.slice(0, 15).map((value, key) => {
+            <div className="data-result">
+                <h3 style={{color: "black"}}>Result</h3>
+                {filteredData.slice(0, 15).map((item) => {
+
                     return (
-                    <a className="dataItem" href={value.link} target="_blank">
-                        <p>{value.first_name} </p>
-                    </a>
+                        <a href={`/profile/${item.id}`} className="data-result-item" key={item.id}>
+                            {item.fullname}
+                        </a>
+                        
                     );
                 })}
             </div>
@@ -71,29 +91,7 @@ const SearchBox = () => {
         </div>
     );
 
-    /*         {/* <Paper
-            component="form"
-            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-        >
-            <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Search Users"
-                inputProps={{ 'aria-label': 'search users' }}
-                value={inputName}
-                onChange={inputChanged}
-            />
-            <IconButton onClick={searchButtonClicked} sx={{ p: '10px' }} aria-label="search">
-                <SearchIcon />
-            </IconButton>
-        </Paper> */
 
-
-
-        
-
-
-    /* ); */ 
-
-}
+    }
 
 export default SearchBox;

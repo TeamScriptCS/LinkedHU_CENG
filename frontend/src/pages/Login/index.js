@@ -12,6 +12,8 @@ import './login.css';
 
 import {switchAlignment} from '../../common/helpers';
 import { ApplicationContext } from '../../common/context';
+
+import { login, saveUserData } from '../../common/methods';
 const Login = () => {
 
     const [alignment, setAlignment] = useState('admin');
@@ -22,7 +24,7 @@ const Login = () => {
     const [isRememberMe, setIsRememberMe] = useState(false);
 
 
-    const submit = () => {
+    const submit = async () => {
         if (username === '' || password === '' || password.length < 8) {
           contextMethods.setSnackbarInfo({
             open: true,
@@ -32,7 +34,39 @@ const Login = () => {
           return;
         }
 
-        contextMethods.login(username, password, alignment, isRememberMe);
+        const response = await login(username, password, alignment, isRememberMe);
+
+
+        if (response?.id) {
+          contextMethods.setSnackbarInfo({
+            open: true,
+            message: 'Login Successful',
+            variant: 'success',
+          });
+          contextMethods.setIsLoggedIn(true);
+          const expiresIn = isRememberMe ? Date.now() + (1000 * 60 * 60 * 24 * 7) : Date.now() + (1000 * 60 * 60 * 24);
+          
+          saveUserData({
+            id: response.id,
+            email: response.email,
+            expiresIn,
+            userType: response.userType.toLocaleLowerCase()
+          });
+          
+          contextMethods.refreshUser();
+
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
+
+        } else {
+          contextMethods.setSnackbarInfo({
+            open: true,
+            message: 'Login Failed: ' + response?.message,
+            variant: 'error',
+          });
+        }
+
     }
 
     const handleEnter = (event) => {
@@ -50,9 +84,6 @@ const Login = () => {
                {switchAlignment(alignment, {fontSize: '40px', color:"#7A5D81"})}
 
                 <h2>Login</h2>
-
-                
-
                 <ToggleButtonGroup
                     color="primary"
                     value={alignment}

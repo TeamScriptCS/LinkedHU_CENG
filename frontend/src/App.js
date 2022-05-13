@@ -11,27 +11,21 @@ import Navbar from './components/Navbar';
 
 import { ApplicationContext } from './common/context';
 
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
 
-import loginFetch from './api/loginFetch';
-import registerFetch from './api/registerFetch';
+
+import {loadUserData} from './common/methods';
 
 
 import './App.css';
-import Home from './pages/Home';
-import advertPublishFetch from './api/advertFetch';
-
-
-
-const loadUserData = () => {
-  return JSON.parse(localStorage.getItem('userData'));
-}
-
-const saveUserData = (userData) => {
-  localStorage.setItem('userData', JSON.stringify(userData));
-}
-
-
+import ForgotPassword from './pages/ForgotPassword';
+import HomePage from './pages/Home/home';
+import Announcements from './pages/Home/announcements';
+import DocumentUploader from './pages/Home/documentUploader';
+import AdvertPublisher from './pages/Home/advertPublish';
+import Profile from './pages/Profile';
+import FileManagement from './pages/FileManagement';
+import UserManagement from './pages/UserManagement';
 
 function App() {
 
@@ -39,111 +33,13 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [user, setUser] = useState(loadUserData());
-  
-
-  const login = async (username, password, userType, isRememberMe) => {
-    
-    try {
-      const res = await loginFetch(username, password, userType);
-      
-      if (res.status === 200) {
-        setIsLoggedIn(true);
-        setSnackbarInfo({
-          open: true,
-          message: 'Login Successful',
-          variant: 'success'
-        });
-
-        const userDTO = {
-          ...res.user,
-          expiresIn: isRememberMe ? new Date().getTime() + (1000 * 60 * 60 * 24 * 7) : new Date().getTime() + (1000 * 60 * 60 * 24 * 1)
-        };
-        saveUserData(userDTO);
-        setUser(userDTO);
-
-      } else {
-        throw new Error(res.message);
-      }
-    } catch (err) {
-      setSnackbarInfo({
-        open: true,
-        message: "Login Failed",
-        variant: 'error'
-      });
-    }
-  }
-
-  const register = async (userInfo, userType, studentType) => {
-
-    const res = await registerFetch(userInfo, userType, studentType);
-
-      if (res.status === 200) {
-        setSnackbarInfo({
-          open: true,
-          message: 'Registration Successful',
-          variant: 'success'
-        });
-      } else {
-        throw new Error(res.message);
-      }
-    try {
-      
-    } catch (err) {
-      setSnackbarInfo({
-        open: true,
-        message: "Registration Failed",
-        variant: 'error'
-      });
-    }
-  }
-
-  const advertPublish = async (advert, advertType) => {
-    
-    try {
-      const res = {
-        status: 200
-      };//await advertPublishFetch(advert);
-      if (res.status === 200) {
-        setSnackbarInfo({
-          open: true,
-          message: 'Advert Published',
-          variant: 'success'
-        });
-        
-        contextMethods.setCurrentPage("home");
-  
-      }
-      else {
-        throw new Error(res.message);
-      }
-  
-      return true;
-    } catch (err) {
-      setSnackbarInfo({
-        open: true,
-        message: "Advert Publish Failed",
-        variant: 'error'
-      });
-      return false;
-    }
-  }
 
 
-
-  const logout = () => {
-    setIsLoggedIn(false);
-    saveUserData(null);
-  }
-      
   const [contextMethods, setContextMethods] = useState({
     setSnackbarInfo,
     isLoggedIn,
     setIsLoggedIn,
-    login,
-    register,
-    logout,
     user,
-    advertPublish,
     refreshUser: () => setUser(loadUserData())
   });
 
@@ -159,10 +55,7 @@ function App() {
     }
   }, [user]);
 
-
-
-
-  return (
+return (
     <ApplicationContext.Provider value={{contextMethods, setContextMethods}}>
       <header className="App-header">
         <Navbar isLoggedIn={isLoggedIn} />  
@@ -178,17 +71,38 @@ function App() {
           </Alert>
           </Snackbar>
           
-        
+          
       </header>
-      <div>
-        <Routes>
-          <Route path="/" exact element={isLoggedIn ? <Home/> : <Intro />} />
-          <Route path="/login" element={isLoggedIn ? <Home/> : <Login/>} />
-          <Route path="/register" element={isLoggedIn ? <Home/> : <Register/>} />
-        </Routes>
-      </div>
 
-      
+      <div className="home-container">
+            <div className="home-content">
+            {!isLoggedIn ? 
+        (
+            <Routes>
+            <Route path="/" exact element={ <Intro />} />
+            <Route path="/login" element={ <Login/>} />
+            <Route path="/register" element={ <Register/>} />
+            <Route path="/forgot-password" element={ <ForgotPassword />} />
+        </Routes>
+        )
+        :
+        (
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/announcements" element={<Announcements />} />
+            <Route path="/upload" element={<DocumentUploader/>} />
+            <Route path="/publish" element={<AdvertPublisher/>} />
+            <Route path="/profile" element={<Profile/>} />
+            <Route path="/files" element={<FileManagement/>}/>
+            <Route path="/users" element={(user && user.userType === 'admin') ? <UserManagement/> : <div>You are not authorized to view this page</div>}/>
+          </Routes>
+
+        )
+        }
+               
+            </div>
+        </div>
+        
     <footer>
       <p>
         Copyright &copy; 2022 LinkedHU CENG. TeamScript. All rights reserved.

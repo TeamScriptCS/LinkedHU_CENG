@@ -3,13 +3,15 @@ import React, { useContext } from "react";
 import { TextField,Button, ButtonGroup,ToggleButtonGroup,ToggleButton } from "@mui/material";
 
 import { ApplicationContext } from "../../common/context";
+import { Link } from "react-router-dom";
+import { publishAdvert } from "../../common/methods";
 
 const AdvertPublisher = () => {
 
     const {contextMethods} = useContext(ApplicationContext);
     const { user } = contextMethods;
     
-    const [advertType, setAdvertType] = React.useState(user.userType === "graduate" ? "job" : "internship");
+    const [advertType, setAdvertType] = React.useState("internship");
 
     const [advert, setAdvert] = React.useState({
         title: '',
@@ -18,22 +20,47 @@ const AdvertPublisher = () => {
         endDate: '',
         location: '',
         contact: '',
-        salary: '',
+        price: '',
     });
 
-    const submitAdvert = () => {
-        if (advert.title === '' || advert.description === '' || advert.startDate === '' || advert.endDate === ''  || advert.contact === '' || advert.salary === '' || advert.type === '') {
+    const submitAdvert = async () => {
+
+        try {
+            const res = await publishAdvert({...advert, 
+                ownerId: user.id,
+                type: advertType
+            
+            });
+            if(res?.message === 'OK') {
+                contextMethods.setSnackbarInfo({
+                    open: true,
+                    message: 'Advert Published',
+                    variant: 'success',
+                });
+                setAdvert({
+                    title: '',
+                    description: '',
+                    startDate: '',
+                    endDate: '',
+                    location: '',
+                    contact: '',
+                    price: '',
+                });
+
+                setTimeout(() => {
+                    window.location.href = '/announcements';
+                }, 2000);
+            }
+            else {
+                throw new Error(res.message);
+            }
+        }
+        catch(err) {
             contextMethods.setSnackbarInfo({
                 open: true,
-                message: 'Please fill in all fields correctly',
+                message: err.message,
                 variant: 'error',
             });
-            return;
-        }
-
-        const publishResult = contextMethods.advertPublish(advert, advertType);
-        if (publishResult) {
-            contextMethods.setCurrentPage("home");
         }
     }
 
@@ -48,8 +75,8 @@ const AdvertPublisher = () => {
                     exclusive
                     onChange={(event, newAdvertType) => setAdvertType(newAdvertType || advertType)}>
                       
-                    {user.userType === 'academic' && <ToggleButton style={{borderRadius: "0px"}} value="internship" ><b>Internship</b></ToggleButton>}
-                    {user.userType === 'academic' && <ToggleButton style={{borderRadius: "0px"}} value="scholarship"><b>Scholarship</b></ToggleButton>}
+                    <ToggleButton style={{borderRadius: "0px"}} value="internship" ><b>Internship</b></ToggleButton>
+                    <ToggleButton style={{borderRadius: "0px"}} value="scholarship"><b>Scholarship</b></ToggleButton>
                     {user.userType === 'graduate' && <ToggleButton style={{borderRadius: "0px"}} value="job" ><b>Job</b></ToggleButton>}
                 </ToggleButtonGroup>
 
@@ -117,18 +144,14 @@ const AdvertPublisher = () => {
                     id="outlined-basic"
                     label= {advertType === "job" || (advertType === "internship") ? "Salary" : "Amount"}
                     variant="outlined"
-                    value={advert.salary}
-                    onChange={(e) => setAdvert({...advert, salary: e.target.value})}
+                    value={advert.price}
+                    onChange={(e) => setAdvert({...advert, price: e.target.value})}
                     autoComplete="off"
                 />
 
                 <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group" style={{alignSelf: 'flex-end'}}>
-                <Button variant="contained" color="error" sx={{mr:"4px"}} onClick={() => {
-
-                    contextMethods.setCurrentPage('home');
-
-                 }}>
-                    Cancel
+                <Button variant="contained" color="error" sx={{mr:"4px"}}>
+                    <Link to="/" style={{textDecoration: "none", color: "white"}}> Cancel </Link>
                 </Button>
 
                 <Button variant="contained" color="primary" sx={{mr:"4px", backgroundColor:"#575268"}} onClick={() => {

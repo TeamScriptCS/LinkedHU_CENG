@@ -12,12 +12,14 @@ import './intro.css';
 
 
 const Intro = ({isLoggedIn}) => {
+
+
     return (
         <div className="intro">
 
         <Card className="intro-card">
 
-            <h1>Welcome to LinkedHU CENG</h1>
+            <h1>Welcome to LinkedHU CENG </h1>
 
             <p>LinkedHU is a social network application that connects students, academics and administrators to each other.</p>
 

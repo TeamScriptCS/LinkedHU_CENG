@@ -10,6 +10,7 @@ import { Box, Card,
 
 import {switchAlignment} from '../../common/helpers';
 import { ApplicationContext } from "../../common/context";
+import { register } from "../../common/methods";
 
 const Register = () => {
 
@@ -23,28 +24,73 @@ const Register = () => {
     });
 
     
-    const { contextMethods } = useContext(ApplicationContext);
+    const { setSnackbarInfo } = useContext(ApplicationContext).contextMethods;
     
     const [alignment, setAlignment] = useState('student');
     const [studentType, setStudentType] = useState('bachelor');
 
 
-    const submit = () => {
+    const submit = async () => {
       
-      // check if all fields are filled
-      if (userInfo.firstName === '' || userInfo.lastName === '' || userInfo.email === '' || userInfo.password === '' ||
-        checkEmail(userInfo.email)) {
-        contextMethods.setSnackbarInfo({
+      if(checkEmail(userInfo.email)) {
+        setSnackbarInfo({
           open: true,
-          message: 'Please fill in all fields correctly',
-          variant: 'error',
+          message: 'Please enter a valid email',
+          variant: 'error'
         });
         return;
-      
       }
 
-      contextMethods.register(userInfo, alignment, studentType);
+      if(userInfo.password.length < 8) {
+        setSnackbarInfo({
+          open: true,
+          message: 'Password must be at least 8 characters',
+          variant: 'error'
+        });
+        return;
+      }
 
+      if(userInfo.firstName.length < 1 || userInfo.lastName.length < 1) {
+        setSnackbarInfo({
+          open: true,
+          message: 'Please enter your first and last name',
+          variant: 'error'
+        });
+        return;
+      }
+
+
+      const res = await register(userInfo.firstName, userInfo.lastName, userInfo.email, userInfo.password, alignment, alignment === 'student' ? studentType : null);
+
+      if(res?.id) {
+        setSnackbarInfo({
+          open: true,
+          message: 'Registration successful',
+          variant: 'success'
+        });
+        setUserInfo({
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+        });
+        
+        // wait 5 seconds before redirecting
+        setTimeout(() => {
+          window.location.href = '/login';
+        }
+        , 2 * 1000);
+      } else {
+
+        setSnackbarInfo({
+          open: true,
+          message: res?.message,
+          variant: 'error'
+        });
+
+
+      }
+    
     }
 
     const handleEnter = (event) => {
