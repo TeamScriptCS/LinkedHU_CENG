@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AppBar, Toolbar, Typography, MenuItem, IconButton, Menu, Button, ButtonGroup, Divider } from '@mui/material';
 
 import { Link } from 'react-router-dom';
-
+import { useLocation } from "react-router-dom";
 
 import './navbar.css';
 import { UploadFile, Article } from "@mui/icons-material";
@@ -12,20 +12,11 @@ import SearchBox from "../SearchBox";
 
 const Navbar = ({isLoggedIn}) => {
 
-    const {contextMethods, setContextMethods }  = useContext(ApplicationContext);
-    const [currentPage, setCurrentPage] = useState('home');
+    const {contextMethods }  = useContext(ApplicationContext);
+    const currentPath = useLocation().pathname;
+    
     const { user } = contextMethods;
 
-
-    useEffect(() => {
-        setContextMethods({
-            ...contextMethods,
-            currentPage: currentPage,
-            setCurrentPage: setCurrentPage
-        });
-    }, [currentPage, setCurrentPage]);
-
-    
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -35,7 +26,6 @@ const Navbar = ({isLoggedIn}) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
     return (
        <>
         <AppBar
@@ -79,37 +69,36 @@ const Navbar = ({isLoggedIn}) => {
               <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group" 
                 sx={{mr:"100px"}}>
                 
-                <Button sx={{mr:'10px'}} variant={currentPage === "home" ? "contained":"outlined"} 
-                  {...(currentPage === "home" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}
-                  onClick={() => setCurrentPage('home')}>
-                  Home
+                <Button sx={{mr:'10px'}} variant={currentPath ==="/" ? "contained":"outlined"} 
+                  {...(currentPath === "/" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}>
+
+                  <Link to="/" className="app-nav-link">Home</Link>
                 </Button>
-                <Button sx={{mr:'5px'}} variant={currentPage === "announcement" ? "contained":"outlined"}
-                  {...(currentPage === "announcement" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}
-                  onClick={() => setCurrentPage('announcement')}>
-                    Announcements
+                <Button sx={{mr:'5px'}} variant={currentPath === "/announcements" ? "contained":"outlined"}
+                  {...(currentPath === "/announcements" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}>
+                  <Link to="/announcements" className="app-nav-link">Announcement</Link>
                 </Button>
-                <Button sx={{mr:'5px'}} variant={currentPage === "request" ? "contained":"outlined"}
-                  {...(currentPage === "request" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}
-                  onClick={() => setCurrentPage('request')}>
-                    Send Request
+                <Button sx={{mr:'5px'}} variant={!currentPath === "/request" ? "contained":"outlined"}
+                  {...(currentPath === "/request" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}>
+                  <Link to="/request" className="app-nav-link">Request</Link>
                 </Button>
                 </ButtonGroup>
 
                 <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
 
-                {user && user.userType === "student" ? null : (<Button variant="contained" aria-label="publish" style={{backgroundColor:"#7a5d81", textTransform: "capitalize", marginRight:"4px"}}
-                  onClick={() => setCurrentPage('publish')}>
+                {user && user.userType === "student" ? null : (<Button variant="contained" aria-label="publish" style={{backgroundColor:"#7a5d81", textTransform: "capitalize", marginRight:"4px"}}>
                 
                   <Article sx={{"mr":1}}/>
-                   
-                  Publish Advertisement
+                  <Link to="/publish" className="app-nav-link"> Publish</Link>
                 </Button>)}
 
-                <Button variant="contained" aria-label="upload" style={{backgroundColor:"#7a5d81", textTransform: "capitalize", marginRight:"20px"}}
-                 onClick={() => setCurrentPage('upload')}>
-                  <UploadFile sx={{"mr":1}}/>
-                  Upload Document
+                <Button variant="contained" aria-label="upload" style={{backgroundColor:"#7a5d81", textTransform: "capitalize", marginRight:"20px"}}>
+                 
+                <UploadFile sx={{"mr":1}}/>
+                  
+                  <Link to="/upload" className="app-nav-link">
+                  Upload</Link>
+
                 </Button>
                 </ButtonGroup>
                  <IconButton
@@ -131,10 +120,11 @@ const Navbar = ({isLoggedIn}) => {
         onClose={handleClose}
       >
         
-        <MenuItem onClick={() => {
-          handleClose();
-          setCurrentPage('profile');
-        }}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>
+
+          <Link to="/profile" className="app-nav-link" style={{textDecoration:"none", color:"#000"}}  > Profile</Link>
+
+        </MenuItem>
         
         <Divider />
         {user && user.userType === "admin" ? (<MenuItem onClick={() => {
@@ -149,9 +139,11 @@ const Navbar = ({isLoggedIn}) => {
         <Divider/>
 
         <MenuItem onClick={() => {
-          contextMethods.logout();
+          localStorage.removeItem('userData');
+          contextMethods.setIsLoggedIn(false);
           setAnchorEl(null);
-          contextMethods.setCurrentPage('home');
+
+          window.location.href = "/";
         }}>Logout</MenuItem>
       </Menu>
 

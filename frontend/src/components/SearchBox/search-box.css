@@ -1,9 +1,9 @@
-.searchInputs {
+.search-inputs {
     margin-top: 8px;
     display: flex;
   }
   
-  .search input {
+  .search-input {
     background-color: white;
     border: 0;
     border-radius: 2px;
@@ -15,7 +15,7 @@
     width: 300px;
   }
   
-  .searchIcon {
+  .search-icon {
     height: 35px;
     width: 40px;
     background-color:white;
@@ -27,44 +27,41 @@
   input:focus {
     outline: none;
   }
-  .searchIcon svg {
+  .search-icon svg {
     font-size: 35px;
   }
   
-  .dataResult {
+  .data-result {
+    display: grid;
     position: fixed;
     margin-top: 5px;
-    width: 300px;
+    width: 320px;
     height: 200px;
-    background-color: white;
+    background-color: whitesmoke;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    overflow: hidden;
+    overflow: hidden; 
+    
+    text-align: center;
     overflow-y: auto;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    
   }
   
-  .dataResult::-webkit-scrollbar {
+  .data-result::-webkit-scrollbar {
     display: none;
   }
   
-  .dataResult .dataItem {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    color: black;
-
-    cursor: pointer;
-  }
   
-  .dataItem p {
-    margin-left: 10px;
-  }
-  a {
+  .data-result-item {
     text-decoration: none;
+
   }
-  
-  a:hover {
-    background-color: lightgrey;
+  .data-result-item:hover{
+    background-color: #fafafa;
   }
   
   #clearBtn {

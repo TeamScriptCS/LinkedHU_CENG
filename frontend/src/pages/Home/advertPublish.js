@@ -3,6 +3,8 @@ import React, { useContext } from "react";
 import { TextField,Button, ButtonGroup,ToggleButtonGroup,ToggleButton } from "@mui/material";
 
 import { ApplicationContext } from "../../common/context";
+import { Link } from "react-router-dom";
+import { publishAdvert } from "../../common/methods";
 
 const AdvertPublisher = () => {
 
@@ -21,20 +23,45 @@ const AdvertPublisher = () => {
         salary: '',
     });
 
-    const submitAdvert = () => {
-        if (advert.title === '' || advert.description === '' || advert.startDate === '' || advert.endDate === ''  || advert.contact === '' || advert.salary === '' || advert.type === '') {
+    const submitAdvert = async () => {
+
+        try {
+            const res = await publishAdvert({...advert, 
+                ownerId: user.id,
+                type: advertType
+            
+            });
+            if(res?.message === 'OK') {
+                contextMethods.setSnackbarInfo({
+                    open: true,
+                    message: 'Advert Published',
+                    variant: 'success',
+                });
+                setAdvert({
+                    title: '',
+                    description: '',
+                    startDate: '',
+                    endDate: '',
+                    location: '',
+                    contact: '',
+                    salary: '',
+                });
+
+                setTimeout(() => {
+                    window.location.href = '/announcements';
+                }, 2000);
+            }
+            else {
+                throw new Error(res.message);
+            }
+        }
+        catch(err) {
             contextMethods.setSnackbarInfo({
                 open: true,
-                message: 'Please fill in all fields correctly',
+                message: err.message,
                 variant: 'error',
             });
-            return;
         }
-
-        // const publishResult = contextMethods.advertPublish(advert, advertType);
-        // if (publishResult) {
-        //     contextMethods.setCurrentPage("home");
-        // }
     }
 
     return (
@@ -123,12 +150,8 @@ const AdvertPublisher = () => {
                 />
 
                 <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group" style={{alignSelf: 'flex-end'}}>
-                <Button variant="contained" color="error" sx={{mr:"4px"}} onClick={() => {
-
-                    contextMethods.setCurrentPage('home');
-
-                 }}>
-                    Cancel
+                <Button variant="contained" color="error" sx={{mr:"4px"}}>
+                    <Link to="/" style={{textDecoration: "none", color: "white"}}> Cancel </Link>
                 </Button>
 
                 <Button variant="contained" color="primary" sx={{mr:"4px", backgroundColor:"#575268"}} onClick={() => {

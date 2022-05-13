@@ -11,15 +11,19 @@ import Navbar from './components/Navbar';
 
 import { ApplicationContext } from './common/context';
 
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
 
 
-import {loadUserData, saveUserData, login} from './common/methods';
+import {loadUserData} from './common/methods';
 
 
 import './App.css';
-import Home from './pages/Home';
 import ForgotPassword from './pages/ForgotPassword';
+import HomePage from './pages/Home/home';
+import Announcements from './pages/Home/announcements';
+import DocumentUploader from './pages/Home/documentUploader';
+import AdvertPublisher from './pages/Home/advertPublish';
+import Profile from './pages/Profile';
 
 function App() {
 
@@ -27,20 +31,12 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [user, setUser] = useState(loadUserData());
-  
 
-  const logout = () => {
-    setIsLoggedIn(false);
-    saveUserData(null);
-  }
-      
+
   const [contextMethods, setContextMethods] = useState({
     setSnackbarInfo,
     isLoggedIn,
     setIsLoggedIn,
-    login,
-    // register,
-    logout,
     user,
     refreshUser: () => setUser(loadUserData())
   });
@@ -57,10 +53,7 @@ function App() {
     }
   }, [user]);
 
-
-
-
-  return (
+return (
     <ApplicationContext.Provider value={{contextMethods, setContextMethods}}>
       <header className="App-header">
         <Navbar isLoggedIn={isLoggedIn} />  
@@ -76,18 +69,37 @@ function App() {
           </Alert>
           </Snackbar>
           
-        
+          
       </header>
-      <div>
-        <Routes>
-          <Route path="/" exact element={isLoggedIn ? <Home/> : <Intro />} />
-          <Route path="/login" element={isLoggedIn ? <Home/> : <Login/>} />
-          <Route path="/register" element={isLoggedIn ? <Home/> : <Register/>} />
-          <Route path="/forgot-password" element={isLoggedIn ? <Home/> : <ForgotPassword />} />
-        </Routes>
-      </div>
 
-      
+      <div className="home-container">
+            <div className="home-content">
+            {!isLoggedIn ? 
+        (
+            <Routes>
+            <Route path="/" exact element={ <Intro />} />
+            <Route path="/login" element={ <Login/>} />
+            <Route path="/register" element={ <Register/>} />
+            <Route path="/forgot-password" element={ <ForgotPassword />} />
+        </Routes>
+        )
+        :
+        (
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/announcements" element={<Announcements />} />
+            <Route path="/upload" element={<DocumentUploader/>} />
+            <Route path="/publish" element={<AdvertPublisher/>} />
+            <Route path="/profile" element={<Profile/>} />
+            
+          </Routes>
+
+        )
+        }
+               
+            </div>
+        </div>
+        
     <footer>
       <p>
         Copyright &copy; 2022 LinkedHU CENG. TeamScript. All rights reserved.

@@ -1,93 +1,206 @@
-import { postFetch } from '../api/useFetch';
+import { deleteFetch, getFetch, postFetch, putFetch, fileFetch } from '../api/useFetch';
 
-const loadUserData = () => {
+export const loadUserData = () => {
     return JSON.parse(localStorage.getItem('userData'));
-  }
+}
   
-const saveUserData = (userData) => {
+export const saveUserData = (userData) => {
     localStorage.setItem('userData', JSON.stringify(userData));
 }
   
-const login = async (username, password, userType, isRememberMe) => {
+export const login = async (username, password, userType, isRememberMe) => {
+  try {
+      
+    const res = await postFetch(`login`,{username, password, userType});
     
-    try {
-      const res = await postFetch(`${userType}/login`,{username, password, userType});
+    if (res?.id) {
+      const userDTO = {
+        id: res.id,
+        email: res.email,
+        userType: res.usertype.toLocaleLowerCase(),
+        expiresIn: isRememberMe ? new Date().getTime() + (1000 * 60 * 60 * 24 * 7) : new Date().getTime() + (1000 * 60 * 60 * 24 * 1)
+      };
+      return userDTO;
+    }
+    else {
+      throw new Error(res.message);
+    }
 
+  }
+  catch (err) {
+    return {
+      status: "error",
+      message: err.message
+    }
+  }
+  
+}
+
+export const register = async (firstname,lastname,email,password,userType,studentType ) => {
+
+
+
+  const payload =  {
+    firstname,
+    lastname,
+    email,
+    password,
+    userType,
+    studentType
+  };
+
+
+  try {
+    const res = await postFetch(`register`, payload);
+
+    if (res?.id) {
+
+      return res;
+      
+    }
+
+    else {
+      throw new Error(res.message);
+    }
+  }
+  catch (err) {
+    return {
+      status: "error",
+      message: err.message
+    }
+  }
+}
+
+export const profile = async (username) => {
+  
+    try { 
+      const res = await getFetch(`me`, username);
       if (res?.id) {
-
-
-        const userDTO = {
-          id: res.id,
-          email: res.email,
-          userType: res.usertype.toLocaleLowerCase(),
-          expiresIn: isRememberMe ? new Date().getTime() + (1000 * 60 * 60 * 24 * 7) : new Date().getTime() + (1000 * 60 * 60 * 24 * 1)
-        };
-
-        return userDTO;
-        
-
-      } else {
-
+        return res;
+      }
+      else {
         throw new Error(res.message);
       }
-    } catch (err) {
-        return {
-            status: "error",
-            message: err
-        }
-    }
-  }
-
-  const register = async (username, password, userType) => {
-    try {
-      const res = await postFetch(`${userType}/register`,{username, password, userType});
-
     }
     catch (err) {
-        return {
-            status: "error",
-            message: err
-        }
+      return {
+        status: "error",
+        message: err.message
+      }
     }
   }
 
 
+export const updateUser = async (username, userData) => {
 
-  // const advertPublish = async (advert, advertType) => {
-    
-  //   try {
-  //     const res = {
-  //       status: 200
-  //     };//await advertPublishFetch(advert);
-  //     if (res.status === 200) {
-  //       setSnackbarInfo({
-  //         open: true,
-  //         message: 'Advert Published',
-  //         variant: 'success'
-  //       });
-        
-  //       contextMethods.setCurrentPage("home");
-  
-  //     }
-  //     else {
-  //       throw new Error(res.message);
-  //     }
-  
-  //     return true;
-  //   } catch (err) {
-  //     setSnackbarInfo({
-  //       open: true,
-  //       message: "Advert Publish Failed",
-  //       variant: 'error'
-  //     });
-  //     return false;
-  //   }
-  // }
+  try {
+    const res = await putFetch(`me`, userData);
 
-
-
-export {
-    login,
-    loadUserData,
-    saveUserData
+    if (res?.id) {
+      return res;
+    }
+    else {
+      throw new Error(res.message);
+    }
+  }
+  catch (err) {
+    return {
+      status: "error",
+      message: err.message
+    }
+  }
 }
+
+export const deleteUser = async (username) => {
+  
+    try {
+      const res = await deleteFetch(`me`, username);
+
+      if (!res.data) {
+        return res;
+      }
+      else {
+        throw new Error(res.message);
+      }
+    }
+    catch (err) {
+      return {
+        status: "error",
+        message: err.message
+      }
+    }
+  }
+
+export const search = async (searchTerm) => {
+  try {
+    const res = await getFetch(`search`, searchTerm);
+
+    if (res?.length > 0) {
+      return res;
+    }
+    else {
+      return [];
+    }
+  }
+  catch (err) {
+    return [];
+  }
+}
+
+export const publishAdvert = async (advert) => {
+  
+    try {
+      const res = await postFetch(`advert/publish`, advert);
+
+      
+  
+      if (res?.message === "OK") {
+        return res;
+      }
+      else {
+        throw new Error(res.message);
+      }
+    }
+    catch (err) {
+      return {
+        status: "error",
+        message: err.message
+      }
+    }
+}
+
+export const getAllAnnouncements = async () => {
+  try {
+    const res = await getFetch(`advert/get/all`);
+
+    if (res?.length > 0) {
+      return res;
+    }
+    else {
+      return [];
+    }
+  }
+  catch (err) {
+    return [];
+  }
+}
+
+export const deleteAdvert = async (advertId) => {
+  try {
+    const res = await deleteFetch(`advert/delete/${advertId}`);
+
+    if (res && res === "OK") {
+      return res;
+    }
+    else {
+      throw new Error(res.message);
+    }
+  }
+  catch (err) {
+    return {
+      status: "error",
+      message: err.message
+    }
+  }
+}
+

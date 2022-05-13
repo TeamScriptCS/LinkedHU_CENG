@@ -13,9 +13,8 @@ const postFetch = ( url, body) => {
     .then(res => res.json())
     .then(res => {
 
-        
         if(res?.message === 'OK'){
-            return res.data;
+            return !res.data ? res : res.data;
         }
         else{
             throw new Error(res.message);
@@ -26,9 +25,9 @@ const postFetch = ( url, body) => {
     });
 }
 
-const getFetch = ( url) => {
+const getFetch = ( url, body) => {
 
-    return fetch(`${API_URL}/${url}`, {
+    return fetch(`${API_URL}/${url}?${new URLSearchParams(body)}`, {
 
         method: 'GET',
         headers: {
@@ -73,8 +72,8 @@ const putFetch = ( url, body) => {
     } );
 }
 
-const deleteFetch = ( url) => {
-    return fetch(`${API_URL}/${url}`, {
+const deleteFetch = (url, username) => {
+    return fetch(`${API_URL}/${url}?${new URLSearchParams(username)}`, {
 
         method: 'DELETE',
         headers: {
@@ -83,18 +82,20 @@ const deleteFetch = ( url) => {
     })
     .then(res => res.json())
     .then(res => {
+
         if(res?.message === 'OK'){
-            return res.data;
+            return res;
         }
         else{
             throw new Error(res.message);
         }
     }).catch(err => {
+
+        console.log(err);
         throw new Error(err.message);
     } );
 
 }
-
 
 export  {
     postFetch,

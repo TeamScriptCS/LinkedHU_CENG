@@ -13,7 +13,7 @@ import './login.css';
 import {switchAlignment} from '../../common/helpers';
 import { ApplicationContext } from '../../common/context';
 
-import { saveUserData } from '../../common/methods';
+import { login, saveUserData } from '../../common/methods';
 const Login = () => {
 
     const [alignment, setAlignment] = useState('admin');
@@ -34,7 +34,7 @@ const Login = () => {
           return;
         }
 
-        const response = await contextMethods.login(username, password, alignment, isRememberMe);
+        const response = await login(username, password, alignment, isRememberMe);
 
 
         if (response?.id) {
@@ -44,8 +44,6 @@ const Login = () => {
             variant: 'success',
           });
           contextMethods.setIsLoggedIn(true);
-          contextMethods.setCurrentPage('home');
-
           const expiresIn = isRememberMe ? Date.now() + (1000 * 60 * 60 * 24 * 7) : Date.now() + (1000 * 60 * 60 * 24);
           
           saveUserData({
@@ -56,6 +54,10 @@ const Login = () => {
           });
           
           contextMethods.refreshUser();
+
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
 
         } else {
           contextMethods.setSnackbarInfo({

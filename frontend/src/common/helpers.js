@@ -25,24 +25,6 @@ const switchAlignment = (alignment, sx) => {
     }
 }
 
-const switchPage = (page) => {
-    switch (page) {
-        case 'home':
-            return <HomePage/>
-        case 'announcement':
-            return <Announcements/>
-        case 'upload':
-            return <DocumentUploader/>
-        case 'publish':
-            return <AdvertPublisher/>
-        case 'profile':
-            return <Profile/>
-        default:
-            return <HomePage/>
-    }
-}
-
 export {
-    switchAlignment,
-    switchPage
+    switchAlignment
 }
