@@ -8,6 +8,7 @@ import Announcements from '../pages/Home/announcements';
 import DocumentUploader from '../pages/Home/documentUploader';
 import AdvertPublisher from '../pages/Home/advertPublish';
 import Profile from '../pages/Profile';
+import Chat from '../components/Chat/Chat'
 
 const switchAlignment = (alignment, sx) => {
     switch (alignment) {

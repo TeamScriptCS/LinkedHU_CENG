@@ -82,6 +82,11 @@ const Navbar = ({isLoggedIn}) => {
                   {...(currentPath === "/request" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}>
                   <Link to="/request" className="app-nav-link">Request</Link>
                 </Button>
+                <Button sx={{mr:'5px'}} variant={currentPage === "chat" ? "contained":"outlined"}
+                  {...(currentPage === "chat" ? {style:{backgroundColor:"#2d4f4f"}}:{style:{color:"#fff"}})}
+                  onClick={() => setCurrentPage('chat')}>
+                    Chat
+                </Button>
                 </ButtonGroup>
 
                 <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
