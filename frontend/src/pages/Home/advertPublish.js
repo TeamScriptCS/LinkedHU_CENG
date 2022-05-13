@@ -20,7 +20,7 @@ const AdvertPublisher = () => {
         endDate: '',
         location: '',
         contact: '',
-        salary: '',
+        price: '',
     });
 
     const submitAdvert = async () => {
@@ -44,7 +44,7 @@ const AdvertPublisher = () => {
                     endDate: '',
                     location: '',
                     contact: '',
-                    salary: '',
+                    price: '',
                 });
 
                 setTimeout(() => {
@@ -144,8 +144,8 @@ const AdvertPublisher = () => {
                     id="outlined-basic"
                     label= {advertType === "job" || (advertType === "internship") ? "Salary" : "Amount"}
                     variant="outlined"
-                    value={advert.salary}
-                    onChange={(e) => setAdvert({...advert, salary: e.target.value})}
+                    value={advert.price}
+                    onChange={(e) => setAdvert({...advert, price: e.target.value})}
                     autoComplete="off"
                 />
 

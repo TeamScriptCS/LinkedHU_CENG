@@ -130,12 +130,19 @@ const Navbar = ({isLoggedIn}) => {
         {user && user.userType === "admin" ? (<MenuItem onClick={() => {
           handleClose();
         }
-        }>Manage Accounts</MenuItem>): null}
+        }>
+          <Link to="/users" className="app-nav-link" style={{textDecoration:"none", color:"#000"}}  > Manage Accounts</Link>
+
+        </MenuItem>): null}
 
         <MenuItem 
         onClick={() => {
+          handleClose();
         }
-        }>Manage Videos</MenuItem>
+        }>
+          <Link to="/files" className="app-nav-link" style={{textDecoration:"none", color:"#000"}}  > Manage Files</Link>
+
+        </MenuItem>
         <Divider/>
 
         <MenuItem onClick={() => {

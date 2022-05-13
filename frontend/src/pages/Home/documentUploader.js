@@ -8,10 +8,9 @@ import { ApplicationContext } from '../../common/context';
 import { API_URL } from '../../common/constants';
 const DocumentUploader = () => {
 
-    const [fileContent, setFileContent] = useState('');
+    const [rawFile, setRawFile] = useState(null);
     const [fileName, setFileName] = useState('');
-    const [progress, setProgress] = useState(0);
-
+    const [isProgress, setIsProgress] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
@@ -20,15 +19,11 @@ const DocumentUploader = () => {
     const openFile = () => {
         const fileInput = document.getElementById('fileInput');
         fileInput.click();
-
-
     }
     const handleFile = (event) => {
         const file = event.target.files[0];
 
-        console.log(file)
-
-        if(file.size > 10 * 1024 * 1024 * 100) {
+        if(file.size > 100*1024*1024) {
             setSnackbarInfo({
                 open: true,
                 message: 'File size should be less than 100MB',
@@ -37,13 +32,9 @@ const DocumentUploader = () => {
             return;
         }
 
-
+        setRawFile(file);
         setFileName(file.name);
-        const reader = new FileReader();
-        reader.readAsText(file);
-        reader.onload = (event) => {
-            setFileContent(event.target.result);
-        }
+        
     }
 
     const upload = async () => {
@@ -53,11 +44,9 @@ const DocumentUploader = () => {
         formData.append('description', description);
         formData.append('fileName', fileName);
         formData.append('owner', user.email);
-        formData.append('file', fileContent);
+        formData.append('file', rawFile);
         
-        
-        console.log(formData.getAll('file'))
-
+        setIsProgress(true);
         const response = await fetch(`${API_URL}/material/upload`, {
             method: 'POST',
             body: formData,
@@ -68,13 +57,14 @@ const DocumentUploader = () => {
         });
         
         const res = await response.json();
-        console.log(res);
+
         if(res.message === 'OK'){
             setSnackbarInfo({
                 open: true,
                 message: 'File uploaded successfully',
                 variant: 'success',
             });
+
         }
         else{
             setSnackbarInfo({
@@ -83,6 +73,8 @@ const DocumentUploader = () => {
                 variant: 'error',
             });
         }
+        
+        setIsProgress(false);
 
     
     }
@@ -149,12 +141,12 @@ const DocumentUploader = () => {
                         
                         </Box>
                         
-                        {progress > 0 &&  <Box sx={{ width: '100%' }}>
-                            <LinearProgress variant="determinate" value={progress} color="secondary" />
+                        {isProgress &&  <Box sx={{ width: '100%' }}>
+                            <LinearProgress variant="indeterminate" color="secondary" />
                         </Box>}
 
                         <Button variant="contained" color="primary" sx={{margin: "8px", width: "100%", backgroundColor: "#141932"}} onClick={upload}>
-                            Upload
+                            {isProgress ? 'Uploading...' : 'Upload'}
                         </Button>
 
 

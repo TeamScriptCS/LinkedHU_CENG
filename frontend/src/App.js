@@ -24,6 +24,8 @@ import Announcements from './pages/Home/announcements';
 import DocumentUploader from './pages/Home/documentUploader';
 import AdvertPublisher from './pages/Home/advertPublish';
 import Profile from './pages/Profile';
+import FileManagement from './pages/FileManagement';
+import UserManagement from './pages/UserManagement';
 
 function App() {
 
@@ -91,7 +93,8 @@ return (
             <Route path="/upload" element={<DocumentUploader/>} />
             <Route path="/publish" element={<AdvertPublisher/>} />
             <Route path="/profile" element={<Profile/>} />
-            
+            <Route path="/files" element={<FileManagement/>}/>
+            <Route path="/users" element={(user && user.userType === 'admin') ? <UserManagement/> : <div>You are not authorized to view this page</div>}/>
           </Routes>
 
         )
