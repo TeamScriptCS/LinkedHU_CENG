@@ -11,6 +11,7 @@ public class AdministratorController {
 
     private final AdministratorService administratorService;
 
+
     public AdministratorController(AdministratorService administratorService) {
         this.administratorService = administratorService;
     }
