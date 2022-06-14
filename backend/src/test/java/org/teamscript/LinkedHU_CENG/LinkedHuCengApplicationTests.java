@@ -1,9 +1,9 @@
-package com.hacettepe.LinkedHU_CENG;
+package org.teamscript.LinkedHU_CENG;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class LinkedHuCengApplicationTests {
 
 	@Test
